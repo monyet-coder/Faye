@@ -1,0 +1,92 @@
+@charset "utf-8";
+/* CSS Document */
+
+.UI {
+	
+}
+
+.UI .Hide {
+	display:none;
+}
+
+select.UI-Combo-Box {
+	padding: 2px;
+}
+
+table.UI-Grid {
+	border-left: 1px solid #aaa;
+	border-top: 1px solid #aaa;
+	border-collapse:collapse;
+}
+
+table.UI-Grid td, table.UI-Grid th {
+	border-right: 1px solid #aaa;
+	border-bottom: 1px solid #aaa;
+	padding: 2px;
+}
+
+table.UI-Grid th {
+	background-color:#ddd;
+}
+
+button.UI-Button {
+	font-weight: bold;
+}
+
+button.UI-Button > img {
+	margin-right: 4px;
+}
+
+input.Ghost-Text {
+	color: #999;
+}
+
+.UI-Typeahead-Placeholder {
+	margin : 0px;
+	padding : 0px;
+	list-style: none;
+	border : 1px solid #ccc;
+	display: none;
+	position: relative;
+	-moz-user-select:none;
+	-webkit-user-select: none;
+	background-color:#fff;
+}
+
+.UI-Typeahead-Placeholder li.active,
+.UI-Typeahead-Placeholder li:hover {
+	background-color:#999;
+}
+
+.UI-Breadcrumb {
+	margin: 0px;
+	padding: 0px;
+}
+
+.UI-Breadcrumb li {
+	display: inline;
+}
+
+.UI-Notification {
+	position: fixed;
+	right: 0px;
+	bottom: 0px;
+	list-style: none;
+}
+
+.UI-Notification li {
+	margin: 6px;
+	padding: 4px;
+	width: 220px;
+	height: 60px;
+	border: 1px solid #09c;
+	background-color: rgba(0, 128, 200, .5);
+	-webkit-box-shadow: 1px 1px 4px #999;
+	-moz-box-shadow: 1px 1px 4px #999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;	
+}
+
+.UI-Notification li a.Close {
+	float:right;
+}

@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+
+* {
+	padding: 0px;
+	margin: 0px;
+}
+
+body {
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:12px;
+}
+
+a {
+	text-decoration:none;
+}
+
+#chrome {
+	width: 100%;
+	height: 32px;
+	background-image: url(../images/header.png);
+}
+
+#main-logo {
+	color: #FFF;
+	font-size:26px;
+	display:block;
+	float:left;
+	font-weight:bold;
+	text-shadow: 1px 1px 4px #666;
+	margin:1px 0px 0 12px;
+}
+
+#typeahead-search {
+	float:left;
+	margin:4px 0px 0px 128px ;
+}
+
+#typeahead-search input {
+	width: 400px;
+	height:18px;
+}
