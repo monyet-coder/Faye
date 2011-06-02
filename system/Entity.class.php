@@ -40,19 +40,12 @@
 		public $insertID 		= 0;
 	
 		public function __construct($configName = Database::DEFAULT_CONFIG) {
-			$B = Benchmark::getInstance();
-			$B('INIT_ENTITY');
 			$this->queryCache 	= QueryCache::getInstance();
 			$this->configName 	= $configName;			
 			
-			$B('CONNECT');
 			$this->connect($this->configName);
-			$B('CONNECT');
 			
-			$B('INIT');					
-			$this->init();	
-			$B('INIT');
-			$B('INIT_ENTITY');
+			$this->init();
 		}
 		
 		protected function init() {
@@ -81,8 +74,7 @@
 					}
 				}
 			} catch(Exception $e) {
-				// Special analyzer for unsupported driver
-				
+				// Special analyzer for unsupported driver	
 				$analyzerName = ucfirst(strtolower($this->config['driver'])) . 'Analyzer';
 				App::load()->database($analyzerName, '/Analyzer');
 				
@@ -129,7 +121,11 @@
 		public function getBuilder() {
 			return $this->builder;
 		}
-		
+		/**
+         *
+         * @param int, string $num
+         * @return DatabaseColumn
+         */
 		public function getColumn($num = NULL) {
 			if($num === NULL) {
 				return $this->column;
@@ -437,24 +433,19 @@
 		}
 		
 		protected function execute($query, $params = array()) {
-			Benchmark::getInstance()->mark('QUERY_CACHE');
 			if($this->queryCache->exists($query)) {
 				$statement = $this->queryCache->get($query);
-			} else {
-				Benchmark::getInstance()->mark('PREPARE');				
+			} else {		
 				$statement = $this->db->prepare($query);
-				Benchmark::getInstance()->mark('PREPARE');
 				
 				$this->queryCache->set($query, $statement);
 			}
-			Benchmark::getInstance()->mark('QUERY_CACHE', 'ENTITY_EXECUTE');
 			
 			if(!$statement->execute($params)) {
 				$error = $statement->errorInfo();
 				
 				throw new Exception($error[2]);
 			}
-			Benchmark::getInstance()->mark('ENTITY_EXECUTE');
 			$this->affectedRows = $statement->rowCount();
 			
 			return $statement;
@@ -476,7 +467,7 @@
 			$this->trigger('onBeforeUpdate');
 			
 			if(func_num_args()){
-				$this->__call('where', func_get_args());
+				call_user_func_array(array($this, 'where'), func_get_args());
 			}
 							
 			$setValues = array();
@@ -496,7 +487,7 @@
 			$this->trigger('onBeforeDelete');
 			
 			if(func_num_args()){
-				$this->__call('where', func_get_args());
+				call_user_func_array(array($this, 'where'), func_get_args());
 			}
 			
 			$this->execute($this->builder->buildDelete(), $this->builder->whereValues());

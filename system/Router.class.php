@@ -35,41 +35,15 @@
 			return $route;
 		}
 	
-		/**
-		* Transform hyphenated-method-name to camelCaseName
-		*/
-		private function transformClass($class) {
-			if(strpos($class, '-') !== false) {
-				$class = str_replace(' ', NULL, ucwords(str_replace('-', ' ', $class)));								
-			}
-
-			return $class;
-		}
-	
-		/**
-		* Transform hyphenated-method-name to camelCaseName
-		*/
-		private function transformMethod($method) {
-			if(strpos($method, '-') !== false) {
-				$method = ucwords(str_replace('-', ' ', $method));
-				
-				$methodSegments = explode(' ', $method);
-				$firstSegment = strtolower(array_shift($methodSegments));
-
-				$method = $firstSegment . implode($methodSegments);
-			}
-			
-			return $method;
-		}
-	
 		public function run() {
-			$this->class 	= $this->transformClass(URI::getInstance()->rsegment(0));
-			$this->method 	= $this->transformMethod(URI::getInstance()->rsegment(1));
+			App::load()->util('String');
+			
+			$this->class 	= String::pascalize(URI::getInstance()->rsegment(0));
+			$this->method 	= String::camelize(URI::getInstance()->rsegment(1));
 			
 			if(empty($this->class)) {
-				$this->class = 'index';
+				$this->class = 'Index';
 			}
-			
 			if(!Controller::exists($this->class)) {
 				Response::getInstance()->setHTTPCode(Response::NOT_FOUND);
 				echo

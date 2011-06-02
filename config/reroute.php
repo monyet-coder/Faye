@@ -1,4 +1,4 @@
 <?php
 	$config['reroute'] = array(
-		'index/:any'	=> '$1',
+		#'index/:any'	=> '$1',
 	);

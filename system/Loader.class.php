@@ -5,7 +5,6 @@
 		protected static $instance;		
 		
 		private $types 	= array();
-		private $loaded = array();
 		
 		protected function __construct() {
 			$this->types = array(
@@ -49,6 +48,10 @@
 		}
 		
 		private function load($name, $type, $subDir = '') {
+			if(class_exists($name) or interface_exists($name)) {
+				return $this;
+			}
+			
 			$path 	= $this->types[$type]['path'];
 			$exts 	= $this->types[$type]['ext'];
 			$found 	= false;
@@ -57,13 +60,11 @@
 			
 			foreach(explode('|', $exts) as $ext) {
 				$fileName = __SITE_PATH . '/' . $path . $subDir . '/' . $name . $ext . '.php';
-				
-				if(isset($this->loaded[$fileName])) {
-					$found = true;
-				} else if(is_file($fileName)) {
-					include $fileName;
+			
+				if(is_file($fileName)) {
+					require($fileName);
 					
-					$this->loaded[$fileName] = $found = true;	
+					$found = true;	
 				}
 			}
 			
@@ -83,6 +84,10 @@
 		}
 		
 		public function lib($fileName, $subDir = '') {
+			return $this->library($fileName, $subDir);
+		}
+		
+		public function libraries($fileName, $subDir = '') {
 			return $this->library($fileName, $subDir);
 		}
 		

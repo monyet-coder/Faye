@@ -1,38 +1,41 @@
 <?php
+	defined('__SITE_PATH') or exit('NO DIRECT SCRIPT ACCESS ALLOWED.');
+
 	class Autoload extends Singleton {
 		protected static $instance;
 		
 		public $paths = array();
 		
-		public function register($path) {
+		public static function register($path) {
+			$_this = self::getInstance();
 			if(is_dir($path)) {
-				$this->paths[] = rtrim($path, '/');
+				$_this->paths[] = __SITE_PATH . '/' . trim($path, '/');
 			}
 			
-			return $this;
+			return $_this;
 		}
 		
-		public function unregister($path) {
-			$flip = array_flip($this->paths);
+		public static function unregister($path) {
+			$_this = self::getInstance();
+			$flip = array_flip($_this->paths);
 			if(isset($flip[$path])) {
-				unset($this->paths[$flip[$path]]);
+				unset($_this->paths[$flip[$path]]);
 			}
 			
-			return $this;
+			return $_this;
 		}
 	}
-
-	$autoload = Autoload::getInstance();
-	
-	$autoload->register(__SITE_PATH . '/' . __APPLICATION_PATH . '/' . __MODEL_PATH);
-	$autoload->register(__SITE_PATH . '/' . __LIBRARY_PATH . '/UI');
 
 	function __autoload($className) {
 		foreach(Autoload::getInstance()->paths as $path) {
 			$fileName = $path . '/' . $className . '.class.php';
-			
+
 			if(is_file($fileName)) {
-				include $fileName;
+				require $fileName;
+                
+                return true;
 			}
 		}
+        
+        return false;
 	}

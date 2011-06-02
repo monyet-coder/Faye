@@ -1,10 +1,10 @@
-<?php
+<?php	
+	App::import('libraries.UI.*');
+	
 	class PaginationController extends Controller {
-		public function index($page = 1) {
-			$this->load->lib('Pagination');
-			
+		public function index($page = 1) {			
 			$totalItem = 127;
-			$pagination = new Pagination($totalItem);
+			$pagination = new UIPagination($totalItem);
 			
 			$pagination->URL('Pagination/index');
 			$pagination->current($page);

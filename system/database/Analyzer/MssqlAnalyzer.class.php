@@ -5,7 +5,7 @@
 		private $entity = NULL;
 		private $column = NULL;
 		
-		public function __construct($entity) {
+		public function __construct(Entity $entity) {
 			$this->entity = $entity;
 		}
 		

@@ -15,12 +15,8 @@
 		}		
 		
 		public function add($styleName) {			
-			if(!$this->exists($styleName)) {
-				if(strpos('http://', $styleName) === 0) {
-					$this->styles[] = $styleName;
-				} else {				
-					$this->styles[] = $styleName;
-				}
+			if(!$this->exists($styleName)) {			
+				$this->styles[] = $styleName;
 			}
 			
 			return $this;
@@ -37,7 +33,11 @@
 		public function __toString() {
 			$styles = array();
 			foreach($this->styles as $styleName) {
-				$styles[] = HTML('link', array('href' => __BASE_PATH . __RESOURCE_PATH . '/' . __STYLE_PATH . '/' . $styleName));
+				if(strpos('http://', $styleName) === 0) {
+					$styles[] = HTML('link', array('href' => $styleName));
+				} else {
+					$styles[] = HTML('link', array('href' => __BASE_PATH . __RESOURCE_PATH . '/' . __STYLE_PATH . '/' . $styleName));
+				}
 			}
 			
 			return implode("\n", $styles);

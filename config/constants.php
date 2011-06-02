@@ -1,5 +1,5 @@
 <?php
-	define('__BASE_PATH'		, 'http://localhost/fork/');
+	define('__BASE_PATH'		, 'http://localhost/Faye/');
 	define('__SYSTEM_PATH'		, 'system');
 	define('__DATABASE_PATH'	, 'database');
 	define('__APPLICATION_PATH'	, 'application');
@@ -11,6 +11,6 @@
 	define('__SCRIPT_PATH'		, 'scripts');
 	define('__STYLE_PATH'		, 'css');
 	define('__UPLOAD_PATH'		, 'upload');
-	define('__LIBRARY_PATH'		, 'libs');
+	define('__LIBRARY_PATH'		, 'libraries');
 	define('__UTILITY_PATH'		, 'utility');
 	

@@ -18,22 +18,38 @@
 			self::load()->system('Entity');
 			self::load()->system('Model');
 			self::load()->system('View');
-			self::load()->lib('Benchmark');
 			
-			Benchmark::getInstance();
+			App::import('application.model.*');
+			
 			Response::getInstance()->startBuffering();
-			Router::getInstance()->run();
+			Router::getInstance()->run();			
 			
 			echo Response::getInstance();
-			
-			echo Benchmark::getInstance();
 		}
 		
-		public static function basePath($path = '') {
-			return __BASE_PATH . $path . Config::getInstance()->urlSuffix;;
+		public static function basePath($path = '', $suffix = false) {
+			return __BASE_PATH . $path . ($suffix ? $suffix : Config::getInstance()->URLSuffix);
 		}
 		
 		public static function load() {
 			return Loader::getInstance();
+		}
+		
+		public static function import($package) {
+			$package = trim($package);
+			
+			if(substr($package, -2) === '.*') {
+				$package = substr($package, 0, -2);
+				$package = str_replace('.', '/', $package);
+
+				Autoload::register($package);
+			} else {
+				$segments 	= explode('.', $package);
+				$category 	= array_shift($segments);
+				$class 		= array_pop($segments);
+				$subDir 	= '/' . implode($segments);
+				
+				self::load()->{$category}($class, $subDir);
+			}
 		}
 	}

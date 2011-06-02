@@ -15,12 +15,8 @@
 		}
 		
 		public function add($scriptName) {
-			if(!$this->exists($scriptName)) {
-				if(strpos('http://', $scriptName) === 0) {
-					$this->scripts[] = $scriptName;
-				} else {				
-					$this->scripts[] = $scriptName;
-				}
+			if(!$this->exists($scriptName)) {				
+				$this->scripts[] = $scriptName;
 			}
 			
 			return $this;
@@ -37,7 +33,11 @@
 		public function __toString() {
 			$scripts = array();
 			foreach($this->scripts as $scriptName) {
-				$scripts[] = HTML('script', array('src' => __BASE_PATH . __RESOURCE_PATH . '/' . __SCRIPT_PATH . '/' . $scriptName));
+				if(strpos('http://', $scriptName) === 0) {
+					$scripts[] = HTML('script', array('src' => $scriptName));
+				} else {
+					$scripts[] = HTML('script', array('src' => __BASE_PATH . __RESOURCE_PATH . '/' . __SCRIPT_PATH . '/' . $scriptName));
+				}
 			}
 			
 			return implode("\n", $scripts);

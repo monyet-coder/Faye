@@ -1,5 +1,5 @@
 <?php
-	App::load()->lib('aTraversable', '/Traversal');
+	App::load()->lib('aTraversable', '/traversal');
 
 	class DatabaseResult extends aTraversable {		
 		public function __construct($rows) {

@@ -1,6 +1,8 @@
 <?php
 	defined('__SITE_PATH') or exit('NO DIRECT SCRIPT ACCESS ALLOWED.');
 	
+	App::import('libraries.ui.*');
+	
 	class UIController extends Controller {
 		public function index() {
 			$options = array(
@@ -63,7 +65,7 @@
 			$listbox->selectedIndex(1);
 			
 			$typeahead = new UITypeahead();
-			$typeahead->source(array(
+			$typeahead->setSource(array(
 				'Java', 
 				'PHP', 
 				'C', 

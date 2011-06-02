@@ -40,7 +40,7 @@
 				$params[] = ':' . $field;
 			}
 
-			$this->query = sprintf('INSERT INTO `%s`(%s) VALUES (%s)', $this->from, implode(', ', array_keys($data)), implode(', ', $params));
+			$this->query = sprintf('INSERT INTO %s(%s) VALUES (%s)', $this->from[0], implode(', ', array_keys($data)), implode(', ', $params));
 			
 			$this->reset();
 			
@@ -61,7 +61,7 @@
 				$setValues[] = sprintf('`%s` = :v_%s', $field, $field);
 			}
 
-			$this->query = sprintf('UPDATE `%s` SET %s %s', $this->from, implode(', ', $setValues), $this->buildCondition());
+			$this->query = sprintf('UPDATE %s SET %s %s', $this->from[0], implode(', ', $setValues), $this->buildCondition());
 			
 			return $this->query;
 		}
@@ -71,7 +71,7 @@
 				throw new Exception('Table isn\'t set.');
 			}
 			
-			$this->query = sprintf('DELETE FROM `%s` %s', $this->from, $this->buildCondition());
+			$this->query = sprintf('DELETE FROM %s %s', $this->from[0], $this->buildCondition());
 			
 			return $this->query;
 		}

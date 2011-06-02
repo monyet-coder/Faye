@@ -1,2 +1,2 @@
 <?php
-	$config['urlSuffix'] = '.html';
+	$config['URLSuffix'] = '.html';

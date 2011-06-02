@@ -3,10 +3,12 @@
 	
 	abstract class Model extends Entity {
 		protected $validationRule = array();
-		
+        
 		protected $load = NULL;
 		protected $URI	= NULL;
 		
+        public $options;
+        
 		public function __construct($configName = Database::DEFAULT_CONFIG) {
 			parent::__construct($configName);
 			
