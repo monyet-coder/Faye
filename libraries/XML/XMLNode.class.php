@@ -3,6 +3,7 @@
 
 	class XMLNode implements ArrayAccess {
 		public $tagName			= NULL;
+        
 		protected $attr 		= array();		
 		protected $parent 		= NULL;
 		protected $children 	= array();
@@ -13,7 +14,7 @@
 
 			$this->attr = self::parseAttributes($attr);
 		}
-		
+        
 		protected static function parseAttributes($attr) {
 			if(is_string($attr) and preg_match_all('/(.*?)\=\"(.*?)\"[ ]*/', $attr, $match)) {
 				$attr = array_combine($match[1], $match[2]);
@@ -21,19 +22,26 @@
 			
 			return $attr;
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
 		public function __invoke() {
 			return call_user_func_array(array($this, 'append'), func_get_args());
 		}
 		
-		public function getParent($selector = NULL) {
-			if($selector === NULL) {
-				return $this->parent;
-			}
-			
-			return $this->getParents($selector);
+        /**
+         *
+         * @return XMLNode
+         */
+		public function getParent() {
+			return $this->parent;
 		}
-		
+		/**
+         *
+         * @param string $selector
+         * @return array
+         */
 		public function getParents($selector = '*') {
 			App::load()->lib('XMLNodeCrawler', '/XML');
 			
@@ -46,7 +54,11 @@
 			
 			return $parents;
 		}
-		
+		/**
+         *
+         * @param int $index
+         * @return boolean 
+         */
 		public function hasChildren($index = NULL) {
 			if(is_numeric($index)) {
 				return !empty($this->children[$index]);
@@ -54,7 +66,11 @@
 			
 			return !empty($this->children);
 		}
-		
+		/**
+         *
+         * @param string / int $selector
+         * @return array
+         */
 		public function getChildren($selector = '*', $directOnly = false) {
 			if(is_numeric($selector)) {
 				return $this->hasChildren($selector) ? $this->children[$selector] : NULL;
@@ -81,15 +97,25 @@
 			
 			return $result;
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
 		public function getFirstChild() {
 			return count($this->children) > 0 ? $this->children[0] : NULL;
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
 		public function getLastChild() {
 			return count($this->children) > 0 ? $this->children[count($this->children) - 1] : NULL;
 		}
-		
+		/**
+         *
+         * @param string / int $selector
+         * @return XMLNode 
+         */
 		public function removeChildren($selector = '*') {
 			if($selector === '*') {
 				return $this->clearChildren();
@@ -107,7 +133,10 @@
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @return XMLNode 
+         */
 		public function remove() {
 			if($this->parent !== NULL) {
 				$this->parent->removeChildren($this);
@@ -115,15 +144,27 @@
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
 		public function removeFirstChild() {
 			return $this->removeChildren(0);
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
 		public function removeLastChild() {
 			return $this->removeChildren(count($this->children) - 1);
 		}
 		
+        /**
+         *
+         * @param int $index
+         * @param XMLNode $element
+         * @return XMLNode 
+         */
 		protected function setChild($index, $element) {
 			$this->children[$index] = $element;
 			
@@ -131,7 +172,12 @@
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @param int $index
+         * @param XMLNode $element
+         * @return XMLNode 
+         */
 		public function replaceChildren($index, $element) {
 			if(is_numeric($index)) {
 				return $this->removeChildren($index)->setChild($index, $element);
@@ -161,17 +207,38 @@
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @return XMLNode 
+         */
 		public function clearChildren() {
 			$this->children = array();
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @return XMLNode
+         */
+        public function clearAttr() {
+            $this->attr = array();
+            
+            return $this;
+        }
+        /**
+         *
+         * @param string $attrName
+         * @return boolean 
+         */
 		public function hasAttr($attrName) {
 			return isset($this->attr[$attrName]);
 		}
-		
+		/**
+         *
+         * @param string $attrName
+         * @param string $attrValue
+         * @return string
+         */
 		public function attr($attrName, $attrValue = NULL) {
 			if($attrValue !== NULL) {
 				return $this->setAttr($attrName, $attrValue);
@@ -179,7 +246,12 @@
 			
 			return $this->hasAttr($attrName) ? $this->attr[$attrName] : NULL;
 		}
-		
+		/**
+         *
+         * @param string $attrName
+         * @param string $attrValue
+         * @return XMLNode 
+         */
 		public function setAttr($attrName, $attrValue = NULL) {
 			if(is_array($attrName)) {
 				foreach($attrName as $name => $value) {
@@ -193,7 +265,11 @@
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @param string $attrName
+         * @return XMLNode 
+         */
 		public function removeAttr($attrName) {			
 			foreach((array)$attrName as $name) {
 				unset($this->attr[$name]);
@@ -201,13 +277,22 @@
 			
 			return $this;
 		}
-		
-		public function setParent(XMLNode $parent) {
+		/**
+         *
+         * @param XMLNode $parent
+         * @return XMLNode 
+         */
+		protected function setParent(XMLNode $parent) {
 			$this->parent = $parent;
 			
 			return $this;
 		}
-		
+		/**
+         *
+         * @param XMLNode / string $child
+         * @param string $type
+         * @return XMLNode 
+         */
 		protected function addChild($child, $type) {
 			if($type === 'append') {
 				$this->children[] = $child;
@@ -223,7 +308,10 @@
 			
 			return $this;
 		}
-		
+		/**
+         * @param XMLNode / string
+         * @return XMLNode 
+         */
 		public function prepend() {
 			foreach(func_get_args() as $child) {
 				$this->addChild($child, __FUNCTION__);
@@ -231,7 +319,10 @@
 			
 			return $this;
 		}
-		
+		/**
+         * @param XMLNode / string
+         * @return XMLNode 
+         */
 		public function append() {			
 			foreach(func_get_args() as $child) {
 				$this->addChild($child, __FUNCTION__);
@@ -239,19 +330,43 @@
 			
 			return $this;
 		}
-		
+		/**
+         * @param XMLNode $parent
+         * @return XMLNode 
+         */
 		public function appendTo(XMLNode $parent) {
 			$parent->append($this);
 			
 			return $this;
 		}
-		
+        /**
+         *
+         * @param XMLNode $parent
+         * @return XMLNode 
+         */
 		public function prependTo(XMLNode $parent) {
 			$parent->prepend($this);
 			
 			return $this;
 		}
-		
+        /**
+         *
+         * @return string
+         */
+        public function getText() {           
+            return (string)array_reduce($this->getChildren(), function ($text, $child) {
+                if(is_string($child)) {
+                    $text .= $child;
+                }
+                
+                return $text;
+            });
+        }
+		/**
+         *
+         * @param array $attr
+         * @return string 
+         */
 		protected final static function fetchAttr($attr) {
 			if(empty($attr)) {
 				return NULL;
@@ -267,14 +382,21 @@
 			return $attrString;
 		}
 
+        /**
+         *
+         * @param string $tagName
+         * @param array $attr
+         * @param string / array $children
+         * @param boolean $isSingleton
+         * @return string
+         */
 		protected final static function markup($tagName, $attr, $children, $isSingleton = true) {
 			$attrString = self::fetchAttr($attr);
-			
-			if($isSingleton) {
-				return '<' . $tagName . $attrString . ' />';
-			} else {
-				return '<' . $tagName . $attrString . '>' . $children . '</' . $tagName . '>';
-			}
+
+            return 
+                $isSingleton ? 
+                '<' . $tagName . $attrString . ' />' : 
+                '<' . $tagName . $attrString . '>' . $children . '</' . $tagName . '>';
 		}
 		
 		/**
@@ -304,6 +426,10 @@
 			$this->setAttr($attrName, $attrValue);
 		}		
 		
+        /**
+         *
+         * @return string
+         */
 		public function render() {
 			$children = (string)NULL;
 			

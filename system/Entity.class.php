@@ -135,6 +135,10 @@
 				return $this->column->__get(0);
 			}
 		}
+        
+        public function hasField($fieldName) {
+            return in_array($fieldName, $this->column->getNames());
+        }
 		
 		public function getConfig($configKey = NULL) {
 			if($configKey === NULL) {
@@ -498,7 +502,7 @@
 			return $this;
 		}
 		
-		public function getField($column, $unique = false) {
+		public function getField($column, $distinct = false) {
 			$columns = array();
 			
 			if($column === '{PRIMARY_KEY}') {
@@ -509,7 +513,7 @@
 				$column = $this->columnModel->names($column);
 			}
 			
-			if($unique) {
+			if($distinct) {
 				$cache = array();
 				foreach($this as $row) {
 					$value = $this->__get($column);
@@ -561,6 +565,10 @@
 				$this->exec();
 			}
 		
+            if(!$this->hasField($name)) {
+                throw new Exception('Invalid field name specified.');
+            }
+            
 			$result = $this->result->__get($name);
 			
 			if($result !== NULL) {
@@ -568,7 +576,7 @@
 			}
 			
 			if(!Model::exists($name)) {
-				throw new Exception('No field or entity found for specified name.' . $name);
+				return NULL;
 			}
 			
 			if(isset($this->relations[$name])) {
@@ -595,7 +603,7 @@
 		}
 		
 		public function __set($key, $value) {
-			if(in_array($key, $this->columnModel->names)) {
+			if($this->hasField($key)) {
 				return $this->data[$key] = $value;
 			}
 			

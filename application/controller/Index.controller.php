@@ -11,6 +11,9 @@
             $product->where(1);
 			$crud = new CRUDe($product);
             
-            echo $crud->update();
+            $crudPage = $this->view->load('CRUD');
+            $crudPage->CRUD_FORM = $crud->insert();
+            
+            echo $crudPage;
 		}
 	}

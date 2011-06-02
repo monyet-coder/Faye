@@ -2,6 +2,8 @@
 	App::load()->lib('HTML');
 	
 	class UIButton extends button {
+        protected $icon;
+        
 		public function __construct($attr = array()) {
 			parent::__construct($attr);
 			
@@ -11,30 +13,38 @@
 		
 		public function setIcon($img) {
 			if(is_string($img)) {
-				$img = new img(array('src' => $img));
+				$this->icon = new img(array('src' => $img));
 			}
 			
 			if($this->getChildren(0) instanceof img) {				
-				return $this->replaceChildren(0, $img);
+				return $this->replaceChildren(0, $this->icon);
 			} else {
-				return $this->prepend($img);
+				return $this->prepend($this->icon);
 			}
 		}
 		
+        public function getIcon() {
+            return $this->icon;
+        }
+        
 		public function setType($type) {
 			if(in_array($type, array(self::BUTTON, self::SUBMIT, self::RESET))) {
 				$this->setAttr('type', $type);
 			} else {
-				trigger_error('Invalid type given for button.');
+				throw new Exception('Invalid type given for button.');
 			}
 			
 			return $this;
 		}
 		
+        public function getType() {
+            return $this->attr('type');
+        }
+        
 		public function setText($text) {
-			return $this->append($text);
+			return $this->removeLastChild()->append($text);
 		}
-		
+        
 		public function __set($name, $value) {
 			$name = strtolower($name);
 			
@@ -55,7 +65,7 @@
 		
 		public function getStyles() {
 			return array_merge(parent::getStyles(), array(
-				'UI/UI.css'
+				'UI/UI.css',
 			));
 		}
 	}

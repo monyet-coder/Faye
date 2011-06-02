@@ -22,10 +22,20 @@
 			}
 		}
 
+        public function setAttr($attrName, $attrValue = NULL) {
+            if($attrName === 'name') {
+                foreach($this->getChildren('input[type="radio"]') as $radio) {
+                    $radio->setAttr('name', $attrValue);
+                }
+            }
+            
+            return parent::setAttr($attrName, $attrValue);
+        }
+        
 		public function selectedIndex($index) {
-			if(isset($this->children[$index])) {
-				$this->selectedIndex = $index;
-			};
+			$this->selectedIndex = $index;
+			
+            return $this;
 		}
 		
 		public function val($value = NULL) {
@@ -68,10 +78,11 @@
 		}
 		
 		public function render() {
-			if($this->hasChildren($this->selectedIndex)) {
-				$this->children[$this->selectedIndex]->getChildren(0)->getChildren(0)->attr['checked'] = 'checked';
-			}
-			
+            if($this->selectedIndex) {
+                foreach($this->getChildren('input[value="' . $this->selectedIndex . '"]') as $radio) {
+                    $radio->setAttr('checked', 'checked');
+                }
+            }
 			return parent::render();
 		}
 	}

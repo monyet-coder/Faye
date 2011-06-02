@@ -17,10 +17,31 @@
          */
         public function appendCell() {
             foreach(func_get_args() as $element) {
-                $cell = new UIGridCell;
+                if($element instanceof UIGridCell) {
+                    $cell = $element;
+                } else {
+                    $cell = new UIGridCell;
+                    
+                    $cell->append($element);
+                }
                 
-                $cell->append($element);
                 $cell->appendTo($this);
+            }
+            
+            return $this;
+        }
+        
+        public function prependCell() {
+            foreach(func_get_args() as $element) {
+                if($element instanceof UIGridCell) {
+                    $cell = $element;
+                } else {
+                    $cell = new UIGridCell;
+                    
+                    $cell->append($element);
+                }
+                
+                $cell->prependTo($this);
             }
             
             return $this;
@@ -49,7 +70,15 @@
 		protected $head;
 		protected $body;
 		protected $foot;
+        
+        protected $submitter;
 		
+        /**
+         *
+         * @var int
+         */
+        protected $column;
+        
 		public function __construct($rows = array()) {
 			parent::__construct(array());
 			
@@ -89,10 +118,57 @@
             
             return $this;
 		}
+        /**
+         *
+         * @return UIGrid 
+         */
         public function clearChildren() {
             $this->head->clearChildren();
             $this->body->clearChildren();
             $this->foot->clearChildren();
+            
+            $this->appendSubmit();
+            
+            return $this;
+        }
+        /**
+         *
+         * @return UIGrid 
+         */
+        protected function appendSubmit ($submitText = 'Submit') {
+            if(empty($this->submitter)) {
+                $this->submitter = new UIGridRow;
+                $button = new UIButton();
+                
+                $button->setType(UIButton::SUBMIT);
+                $this->submitter->appendCell($button);
+            } else {
+                $result = $this->submitter->getChildren('button');
+                
+                $button = $result[0];
+            }
+            
+            $button->setText($submitText);
+            
+            $this->foot->append($this->submitter);
+            
+            return $this;
+        }
+        /**
+         *
+         * @return int
+         */
+        public function getColumn() {
+            return $this->column;
+        }
+        
+        /**
+         *
+         * @param int $column
+         * @return UIGrid 
+         */
+        public function setColumn($column) {
+            $this->column = $column;
             
             return $this;
         }
@@ -110,6 +186,19 @@
             $tr = new UIGridRow($cells);
             
             $tr->appendTo($this->body);
+            
+            return $this;
+        }
+        public function prependRow() {
+            if(func_num_args() === 1 and is_array($arg = func_get_arg(0))) {
+                $cells = $arg;
+            } else {
+                $cells = func_get_args();
+            }
+            
+            $tr = new UIGridRow($cells);
+            
+            $tr->prependTo($this->body);
             
             return $this;
         }
@@ -161,15 +250,15 @@
          * @return UIGrid 
          */
 		public function showColumn($colIndex) {
-			if($this->head->getChildren(0) and $this->body->getChildren(0)->getChildren($colIndex)) {
+			if($this->head->hasChildren(0) and $this->body->getChildren(0)->hasChildren($colIndex)) {
 				$this->head->getChildren(0)->getChildren($colIndex)->removeClass('Hide');
 			}
 			
-			if($this->body->getChildren(0) and $this->body->getChildren(0)->getChildren($colIndex)) {
+			if($this->body->hasChildren(0) and $this->body->getChildren(0)->hasChildren($colIndex)) {
 				foreach($this->body->getChildren() as $child) {
 					$child->getChildren($colIndex)->removeClass('Hide');
 				}
-			}			
+			}
 			
 			return $this;
 		}
@@ -180,7 +269,7 @@
          * @return UIGrid 
          */
 		public function hideCell($colIndex, $rowIndex) {
-			if($this->body->getChildren($rowIndex) and $this->body->getChildren($rowIndex)->getChildren($colIndex)) {
+			if($this->body->hasChildren($rowIndex) and $this->body->getChildren($rowIndex)->hasChildren($colIndex)) {
 				$this->body->getChildren($rowIndex)->getChildren($colIndex)->addClass('Hide');
 			}
 			
@@ -193,7 +282,7 @@
          * @return UIGrid 
          */
 		public function showCell($colIndex, $rowIndex) {
-			if($this->body->getChildren($rowIndex) and $this->body->getChildren($rowIndex)->getChildren($colIndex)) {
+			if($this->body->hasChildren($rowIndex) and $this->body->getChildren($rowIndex)->hasChildren($colIndex)) {
 				$this->body->getChildren($rowIndex)->getChildren($colIndex)->removeClass('Hide');
 			}
 			

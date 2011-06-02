@@ -329,9 +329,9 @@
 		}
 		
 		public function selectedIndex($index) {
-			if(isset($this->children[$index])) {
-				$this->selectedIndex = $index;
-			};
+			$this->selectedIndex = $index;
+            
+            return $this;
 		}
 		
 		public function val($value = NULL) {
@@ -370,7 +370,9 @@
 		
 		public function render() {
 			foreach((array)$this->selectedIndex as $selectedIndex) {
-				$this->getChildren($selectedIndex)->setAttr('selected', 'selected');
+                foreach($this->getChildren('option[value="' . $selectedIndex . '"]') as $option) {
+                    $option->setAttr('selected', 'selected');
+                }
 			}
 			
 			return parent::render();

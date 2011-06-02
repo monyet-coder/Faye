@@ -26,4 +26,23 @@
 				'greaterThan' => 100000
 			),
 		);
+        
+        public $options = array(
+            'CRUD' => array(
+                'productID' => array(
+                    'type' => 'label',
+                ),
+                'categoryID' => array(
+                    'type' => 'combo',
+                    'source' => array(
+                        'model' => 'Category',
+                        'value' => 'categoryID',
+                        'text' => 'categoryName',
+                    ),
+                ),
+                'productPicture' => array(
+                    'type' => 'file',
+                ),
+            ),
+        );
 	}
