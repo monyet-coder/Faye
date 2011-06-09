@@ -12,8 +12,8 @@
 			$crud = new CRUDe($product);
             
             $crudPage = $this->view->load('CRUD');
-            $crudPage->CRUD_FORM = $crud->insert();
-            
+            $crudPage->CRUD_FORM = $crud->update();
+
             echo $crudPage;
 		}
 	}

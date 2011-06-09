@@ -294,6 +294,10 @@
          * @return XMLNode 
          */
 		protected function addChild($child, $type) {
+            if($child === NULL) {
+                return $this;
+            }
+            
 			if($type === 'append') {
 				$this->children[] = $child;
 			} else if($type === 'prepend') {
@@ -431,18 +435,13 @@
          * @return string
          */
 		public function render() {
-			$children = (string)NULL;
-			
-			foreach($this->children as $child) {
-				//$children .= is_string($child) ? htmlspecialchars($child) : $child;
-				$children .= $child;
-			}
-
 			return
 				self::markup(
 					$this->tagName, 
 					$this->attr, 
-					$children, 
+					array_reduce($this->children, function($children, $child) {
+                        return $children .= $child;
+                    }), 
 					$this->isSingleton
 				);
 		}

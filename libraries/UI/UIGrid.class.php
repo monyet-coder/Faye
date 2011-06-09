@@ -311,4 +311,11 @@
 				'UI/UI.css',
 			));
 		}
+        
+        public function render() {
+            $td = $this->submitter->getChildren('td');
+            $td[0]->setAttr('colspan', count($this->body->getChildren('td')));
+            
+            return parent::render();
+        }
 	}

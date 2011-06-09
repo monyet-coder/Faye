@@ -1,5 +1,5 @@
 <?php
-	define('__BASE_PATH'		, 'http://localhost/Faye/');
+	define('__BASE_PATH'		, 'http://localhost/faye/');
 	define('__SYSTEM_PATH'		, 'system');
 	define('__DATABASE_PATH'	, 'database');
 	define('__APPLICATION_PATH'	, 'application');

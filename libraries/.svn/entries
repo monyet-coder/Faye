@@ -1,0 +1,182 @@
+10
+
+dir
+0
+svn://192.168.11.123/Project/repos/exoduzTouchPerformance/libs
+svn://192.168.11.123/Project/repos/exoduzTouchPerformance
+add
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4c1e9a6f-51f8-4d9b-8aaa-07595129e87a
+
+jQuery
+dir
+
+
+
+add
+
+Validator.class.php
+file
+
+
+
+add
+
+file
+dir
+
+
+
+add
+
+MIME.class.php
+file
+
+
+
+add
+
+Pagination.class.php
+file
+
+
+
+add
+
+Benchmark.class.php
+file
+
+
+
+add
+
+UserAgent.class.php
+file
+
+
+
+add
+
+dataStructure
+dir
+
+
+
+add
+
+XML.class.php
+file
+
+
+
+add
+
+CRUDe.class.php
+file
+
+
+
+add
+
+Cache.class.php
+file
+
+
+
+add
+
+HTML.class.php
+file
+
+
+
+add
+
+cURL.class.php
+file
+
+
+
+add
+
+XML
+dir
+
+
+
+add
+
+Uploader.php
+file
+
+
+
+add
+
+cache
+dir
+
+
+
+add
+
+Traversal
+dir
+
+
+
+add
+
+HTML
+dir
+
+
+
+add
+
+jQuery.class.php
+file
+
+
+
+add
+
+Image.class.php
+file
+
+
+
+add
+
+Profiler.class.php
+file
+
+
+
+add
+
+UI
+dir
+
+
+
+add
+

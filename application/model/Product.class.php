@@ -41,8 +41,18 @@
                     ),
                 ),
                 'productPicture' => array(
-                    'type' => 'file',
+                    'type'      => 'file',
+                    'extension' => array('jpg', 'png', 'gif'),
+                    'maxSize'   => 2248,
                 ),
+                /*
+                'productPicture' => array(
+                    'type'      => 'img',
+                    'resizeTo'  => array('width' => 400, 'height' => 300),
+                    'crop'      => array('width' => 100, 'height' => 200),
+                ),
+                 * 
+                 */
             ),
         );
 	}

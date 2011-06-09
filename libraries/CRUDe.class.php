@@ -41,7 +41,15 @@
                     break;
                     case 'file':
                     case 'upload':
-                        $element = new UIUpload();
+                        $element = new UIUpload;
+                        
+                        if(isset($option['extension'])) {
+                            $element->setAllowed($option['extension']);
+                        }
+                        
+                        if(isset($option['maxSize'])) {
+                            $element->setMaxSize($option['maxSize']);
+                        }
                     break;
                     case 'radio':
                     case 'radiobutton':

@@ -2,7 +2,7 @@
 	App::load()->lib('HTML');
 
 	class UIText extends span {
-		public function __construct($text = '', $attr = array()) {
+		public function __construct($text = NULL, $attr = array()) {
 			parent::__construct($attr);
 			
 			$this->addClass('UI UI-Text');

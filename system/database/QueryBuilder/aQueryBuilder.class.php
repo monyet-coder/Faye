@@ -17,6 +17,13 @@
 		const FALSE			= '0';		
 		const DATETIME_FORMAT	= 'Y-m-d H:i:s';
 		
+        const SELECT_QUERY  = 0;
+        const DELETE_QUERY  = 1;
+        const UPDATE_QUERY  = 2;        
+        
+        const STATE_CLEAN   = 0;
+        const STATE_DIRTY   = 1;
+        
 		/**
 		* Properties to hold query data.
 		*/
@@ -29,6 +36,8 @@
 		protected $offset	= NULL;
 		protected $limit	= NULL;
 		
+        protected $type     = self::SELECT_QUERY;
+        protected $state    = self::STATE_DIRTY;
 		protected $entity 	= NULL;
 		protected $aliasEntity = array();
 		
@@ -113,6 +122,36 @@
 			return $field;
 		}
 		
+        protected function quote($string) {
+            return static::OPEN_QUOTE . $string . static::CLOSE_QUOTE;
+        }
+        
+        public function getQuery() {
+            if(empty($this->query)) {
+                $this->build();
+            }
+            
+            return $this->query;
+        }
+        
+        public function getState() {
+            return $this->state;
+        }
+        
+        public function isDirty() {
+            return $this->state === self::STATE_DIRTY;
+        }
+        
+        public function setDirty() {
+            $this->state = self::STATE_DIRTY;
+            
+            return $this;
+        }
+        
+        public function getType() {
+            return $type;
+        }
+        
 		public function select() {
 			foreach(func_get_args() as $field) {
 				if(is_string($field)) {
@@ -124,13 +163,13 @@
 						$field = trim($field);
 						
 						$this->field[] = array(
-							'fieldName' => static::OPEN_QUOTE . $this->getStripped($field) . static::CLOSE_QUOTE,
+							'fieldName' => $this->quote($this->getStripped($field)),
 							'aggregate'	=> $this->getAggregate($field),
 							'alias'		=> 
-								$this->hasAlias($field) ? 
-									static::OPEN_QUOTE . $this->getAlias($field) . static::CLOSE_QUOTE : 
-									static::OPEN_QUOTE . sprintf('%sOf%s', ucfirst(strtolower($this->getAggregate($field))), $this->getStripped($field)) . static::CLOSE_QUOTE,
+								$this->hasAlias($field) ? $this->quote($this->getAlias($field)) : $this->quote(sprintf('%sOf%s', ucfirst(strtolower($this->getAggregate($field))), $this->getStripped($field))),
 						);
+                        
+                        $this->setDirty();
 					}
 				} else if(is_array($field)) {
 					foreach($field as $f) {
@@ -197,13 +236,15 @@
 		public function from() {
 			foreach(func_get_args() as $from) {			
 				if(is_string($from)) {
-					$this->from[] = static::OPEN_QUOTE . $from . static::CLOSE_QUOTE;
+					$this->from[] = $this->quote($from);
 				} else if($from instanceof Entity) {
 					$this->from[] = sprintf('(%s) Alias%d', $from->getBuilder()->build(), count($this->from));
 					$this->aliasEntity[] = $from;
 				}
 			}
 			
+            $this->setDirty();
+            
 			return $this;
 		}
 		
@@ -245,8 +286,10 @@
 				}
 				
 				$this->where[] = compact('field', 'conjunction', 'value', 'operator', 'placeholder');
+                
+                $this->setDirty();
 			}
-			
+            
 			return $this;
 		}
 
@@ -262,7 +305,9 @@
 							$this->groupBy($f);
 						}
 					} else {
-						$this->groupBy[] = static::OPEN_QUOTE . trim($field) . static::CLOSE_QUOTE;
+						$this->groupBy[] = $this->quote(trim($field));
+                        
+                        $this->setDirty();
 					}
 				} else if(is_array($field)) {
 					foreach($field as $f) {
@@ -282,7 +327,9 @@
 							$this->orderBy($f);
 						}
 					} else {
-						$this->orderBy[] = static::OPEN_QUOTE . trim($field) . static::CLOSE_QUOTE;
+						$this->orderBy[] = $this->quote(trim($field));
+                        
+                        $this->setDirty();
 					}
 				} else if(is_array($field)) {
 					foreach($field as $f) {
@@ -297,24 +344,32 @@
 		public function asc() {
 			$this->orderWay = static::ORDER_ASC;
 			
+            $this->setDirty();
+            
 			return $this;
 		}
 		
 		public function desc() {
 			$this->orderWay = static::ORDER_DESC;
 			
+            $this->setDirty();
+            
 			return $this;
 		}
 				
 		public function offset($offset) {
 			$this->offset = (int)$offset;
 			
+            $this->setDirty();
+            
 			return $this;
 		}
 		
 		public function limit($limit) {
 			$this->limit = (int)$limit;
 			
+            $this->setDirty();
+            
 			return $this;
 		}
 		
@@ -325,7 +380,8 @@
 			$this->orderWay = static::ORDER_ASC;
 			$this->offset 	= NULL;
 			$this->limit 	= NULL;
-			
+			$this->state    = self::STATE_CLEAN;
+            
 			$this->aliasEntity = array();
 			return $this;
 		}
